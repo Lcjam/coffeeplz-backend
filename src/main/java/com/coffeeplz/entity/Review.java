@@ -7,7 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "reviews")
+@jakarta.persistence.Table(name = "reviews")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

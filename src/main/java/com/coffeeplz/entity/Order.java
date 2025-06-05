@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@jakarta.persistence.Table(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -22,10 +22,14 @@ public class Order extends BaseEntity {
     @Column(name = "order_id")
     private Long id;
 
-    @NotNull(message = "사용자는 필수입니다")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
+
+    @NotNull(message = "테이블은 필수입니다")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_id", nullable = false)
+    private Table table;
 
     @NotNull(message = "총 금액은 필수입니다")
     @DecimalMin(value = "0.0", inclusive = false, message = "총 금액은 0보다 커야 합니다")
@@ -117,5 +121,25 @@ public class Order extends BaseEntity {
             throw new IllegalStateException("완료로 변경할 수 없는 주문 상태입니다");
         }
         this.status = OrderStatus.COMPLETED;
+        // 주문 완료 시 테이블을 사용가능 상태로 변경
+        if (table != null) {
+            table.makeAvailable();
+        }
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
+        // 주문 생성 시 테이블을 사용 중으로 변경
+        if (table != null) {
+            table.occupy();
+        }
+    }
+
+    public boolean isTableOrder() {
+        return table != null;
+    }
+
+    public boolean isUserOrder() {
+        return user != null;
     }
 } 

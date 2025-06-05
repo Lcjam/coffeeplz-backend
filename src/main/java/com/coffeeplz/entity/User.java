@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@jakarta.persistence.Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

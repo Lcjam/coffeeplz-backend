@@ -1,6 +1,7 @@
 package com.coffeeplz.repository;
 
 import com.coffeeplz.entity.Cart;
+import com.coffeeplz.entity.Table;
 import com.coffeeplz.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,4 +30,34 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.user = :user")
     void deleteByUser(@Param("user") User user);
+    
+    /**
+     * 테이블의 장바구니 조회
+     */
+    Optional<Cart> findByTable(Table table);
+    
+    /**
+     * QR코드로 테이블의 장바구니 조회
+     */
+    @Query("SELECT c FROM Cart c WHERE c.table.qrCode = :qrCode")
+    Optional<Cart> findByTableQrCode(@Param("qrCode") String qrCode);
+    
+    /**
+     * 테이블의 장바구니 존재 여부 확인
+     */
+    boolean existsByTable(Table table);
+    
+    /**
+     * 테이블의 장바구니 삭제
+     */
+    @Modifying
+    @Query("DELETE FROM Cart c WHERE c.table = :table")
+    void deleteByTable(@Param("table") Table table);
+    
+    /**
+     * QR코드로 테이블의 장바구니 삭제
+     */
+    @Modifying
+    @Query("DELETE FROM Cart c WHERE c.table.qrCode = :qrCode")
+    void deleteByTableQrCode(@Param("qrCode") String qrCode);
 } 

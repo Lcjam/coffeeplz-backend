@@ -9,7 +9,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "cart_items")
+@jakarta.persistence.Table(name = "cart_items")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

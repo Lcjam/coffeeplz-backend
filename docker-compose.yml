@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: coffeeplz-mysql
+    environment:
+      MYSQL_DATABASE: coffeeplz
+      MYSQL_USER: coffeeplz
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - coffeeplz-network
+
+  app:
+    build: .
+    container_name: coffeeplz-app
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_USERNAME: coffeeplz
+      DB_PASSWORD: password
+      JWT_SECRET: mySecretKey12345678901234567890123456789012345678901234567890
+    ports:
+      - "8080:8080"
+    networks:
+      - coffeeplz-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  coffeeplz-network:
+    driver: bridge 

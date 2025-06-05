@@ -12,27 +12,17 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     
     /**
-     * 사용자명으로 사용자 조회
-     */
-    Optional<User> findByUsername(String username);
-    
-    /**
-     * 이메일로 사용자 조회
+     * 이메일로 사용자 조회 (회원 로그인용)
      */
     Optional<User> findByEmail(String email);
     
     /**
-     * 사용자명 중복 체크
-     */
-    boolean existsByUsername(String username);
-    
-    /**
-     * 이메일 중복 체크
+     * 이메일 중복 체크 (회원 가입용)
      */
     boolean existsByEmail(String email);
     
     /**
-     * 특정 포인트 이상을 가진 사용자 조회
+     * 특정 포인트 이상을 가진 사용자 조회 (회원 혜택용)
      */
     @Query("SELECT u FROM User u WHERE u.points >= :points")
     java.util.List<User> findByPointsGreaterThanEqual(@Param("points") Integer points);

@@ -15,29 +15,29 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
     
     /**
-     * 사용자의 장바구니 조회
+     * 회원 사용자의 장바구니 조회 (회원 전용 기능)
      */
     Optional<Cart> findByUser(User user);
     
     /**
-     * 사용자의 장바구니 존재 여부 확인
+     * 회원 사용자의 장바구니 존재 여부 확인 (회원 전용 기능)
      */
     boolean existsByUser(User user);
     
     /**
-     * 사용자의 장바구니 삭제
+     * 회원 사용자의 장바구니 삭제 (회원 전용 기능)
      */
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.user = :user")
     void deleteByUser(@Param("user") User user);
     
     /**
-     * 테이블의 장바구니 조회
+     * 테이블의 장바구니 조회 (QR 주문 시스템 메인 기능)
      */
     Optional<Cart> findByTable(Table table);
     
     /**
-     * QR코드로 테이블의 장바구니 조회
+     * QR코드로 테이블의 장바구니 조회 (QR 주문 시스템 메인 기능)
      */
     @Query("SELECT c FROM Cart c WHERE c.table.qrCode = :qrCode")
     Optional<Cart> findByTableQrCode(@Param("qrCode") String qrCode);

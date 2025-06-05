@@ -27,17 +27,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByMenuOrderByCreatedAtDesc(Menu menu, Pageable pageable);
     
     /**
-     * 특정 사용자의 리뷰 조회
+     * 회원 사용자의 리뷰 조회 (회원 전용 기능)
      */
     List<Review> findByUserOrderByCreatedAtDesc(User user);
     
     /**
-     * 특정 사용자가 특정 메뉴에 대해 작성한 리뷰 조회
+     * 회원 사용자가 특정 메뉴에 대해 작성한 리뷰 조회 (회원 전용)
      */
     Optional<Review> findByUserAndMenu(User user, Menu menu);
     
     /**
-     * 사용자가 특정 메뉴에 리뷰를 작성했는지 확인
+     * 회원 사용자가 특정 메뉴에 리뷰를 작성했는지 확인 (회원 전용)
      */
     boolean existsByUserAndMenu(User user, Menu menu);
     

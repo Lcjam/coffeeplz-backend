@@ -18,24 +18,19 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     
     /**
-     * 특정 사용자의 주문 내역 조회 (최신순)
+     * 회원 사용자의 주문 내역 조회 (최신순) - 회원 전용 기능
      */
     List<Order> findByUserOrderByCreatedAtDesc(User user);
     
     /**
-     * 특정 사용자의 주문 내역 페이징 조회
+     * 회원 사용자의 주문 내역 페이징 조회 - 회원 전용 기능
      */
     Page<Order> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
     
     /**
-     * 주문 상태별 조회
+     * 주문 상태별 조회 - 관리자용
      */
     List<Order> findByStatus(OrderStatus status);
-    
-    /**
-     * 특정 사용자의 특정 상태 주문 조회
-     */
-    List<Order> findByUserAndStatus(User user, OrderStatus status);
     
     /**
      * 특정 기간의 주문 조회
@@ -88,11 +83,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countTodayOrdersByTable(@Param("table") Table table);
     
     /**
-     * 테이블 주문과 사용자 주문 구분 조회
+     * 모든 테이블 주문 조회 (QR 주문 시스템의 메인 조회 방식)
      */
-    @Query("SELECT o FROM Order o WHERE o.table IS NOT NULL ORDER BY o.createdAt DESC")
-    List<Order> findTableOrdersOrderByCreatedAtDesc();
+    @Query("SELECT o FROM Order o ORDER BY o.createdAt DESC")
+    List<Order> findAllOrdersOrderByCreatedAtDesc();
     
+    /**
+     * 회원의 개인 주문 내역 조회 (회원 전용)
+     */
     @Query("SELECT o FROM Order o WHERE o.user IS NOT NULL ORDER BY o.createdAt DESC")
     List<Order> findUserOrdersOrderByCreatedAtDesc();
 } 

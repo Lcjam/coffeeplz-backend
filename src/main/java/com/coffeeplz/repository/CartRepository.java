@@ -1,7 +1,7 @@
 package com.coffeeplz.repository;
 
 import com.coffeeplz.entity.Cart;
-import com.coffeeplz.entity.Table;
+import com.coffeeplz.entity.CafeTable;
 import com.coffeeplz.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,7 +34,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     /**
      * 테이블의 장바구니 조회 (QR 주문 시스템 메인 기능)
      */
-    Optional<Cart> findByTable(Table table);
+    Optional<Cart> findByTable(CafeTable table);
     
     /**
      * QR코드로 테이블의 장바구니 조회 (QR 주문 시스템 메인 기능)
@@ -45,14 +45,14 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     /**
      * 테이블의 장바구니 존재 여부 확인
      */
-    boolean existsByTable(Table table);
+    boolean existsByTable(CafeTable table);
     
     /**
      * 테이블의 장바구니 삭제
      */
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.table = :table")
-    void deleteByTable(@Param("table") Table table);
+    void deleteByTable(@Param("table") CafeTable table);
     
     /**
      * QR코드로 테이블의 장바구니 삭제
@@ -65,7 +65,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
      * 테이블의 장바구니를 아이템과 함께 조회
      */
     @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.cartItems ci LEFT JOIN FETCH ci.menu WHERE c.table = :table")
-    Optional<Cart> findByTableWithItems(@Param("table") Table table);
+    Optional<Cart> findByTableWithItems(@Param("table") CafeTable table);
 
     /**
      * QR코드로 테이블의 장바구니를 아이템과 함께 조회

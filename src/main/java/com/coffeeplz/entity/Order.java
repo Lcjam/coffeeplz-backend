@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@jakarta.persistence.Table(name = "orders")
+@Table(name = "orders")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -29,7 +30,7 @@ public class Order extends BaseEntity {
     @NotNull(message = "테이블은 필수입니다")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id", nullable = false)
-    private Table table;
+    private CafeTable table;
 
     @NotNull(message = "총 금액은 필수입니다")
     @DecimalMin(value = "0.0", inclusive = false, message = "총 금액은 0보다 커야 합니다")
@@ -130,7 +131,7 @@ public class Order extends BaseEntity {
         }
     }
 
-    public void setTable(Table table) {
+    public void setTable(CafeTable table) {
         this.table = table;
         // 주문 생성 시 테이블을 사용 중으로 변경
         if (table != null) {

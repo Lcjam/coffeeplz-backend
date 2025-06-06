@@ -1,7 +1,7 @@
 package com.coffeeplz.service;
 
 import com.coffeeplz.dto.*;
-import com.coffeeplz.entity.Table;
+import com.coffeeplz.entity.CafeTable;
 import com.coffeeplz.entity.TableStatus;
 import com.coffeeplz.repository.TableRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class TableService {
     public QrScanResponse getTableByQrCode(String qrCode) {
         log.info("QR 코드로 테이블 조회: {}", qrCode);
         
-        Table table = tableRepository.findByQrCodeAndIsActiveTrue(qrCode)
+        CafeTable table = tableRepository.findByQrCodeAndIsActiveTrue(qrCode)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 QR 코드입니다"));
 
         // 테이블 사용 가능 여부 확인
@@ -54,7 +54,7 @@ public class TableService {
      * 테이블 목록 조회 (관리자용)
      */
     public Page<TableResponse> getAllTables(Pageable pageable) {
-        Page<Table> tables = tableRepository.findByIsActiveTrue(pageable);
+        Page<CafeTable> tables = tableRepository.findByIsActiveTrue(pageable);
         
         return tables.map(table -> TableResponse.builder()
                 .id(table.getId())
@@ -70,7 +70,7 @@ public class TableService {
      * 전체 테이블 목록 조회 (대시보드용)
      */
     public List<TableResponse> getAllTablesForDashboard() {
-        List<Table> tables = tableRepository.findByIsActiveTrue();
+        List<CafeTable> tables = tableRepository.findByIsActiveTrue();
         
         return tables.stream()
                 .map(table -> TableResponse.builder()
@@ -88,8 +88,8 @@ public class TableService {
      * 테이블 상세 조회
      */
     public TableResponse getTableById(Long tableId) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         return TableResponse.builder()
@@ -117,7 +117,7 @@ public class TableService {
         // QR 코드 생성
         String qrCode = generateUniqueQrCode();
 
-        Table table = Table.builder()
+        CafeTable table = CafeTable.builder()
                 .tableNumber(request.getTableNumber())
                 .seatCount(request.getSeatCount())
                 .locationDescription(request.getLocationDescription())
@@ -125,16 +125,16 @@ public class TableService {
                 .status(TableStatus.AVAILABLE)
                 .build();
 
-        Table savedTable = tableRepository.save(table);
-        log.info("테이블 생성 완료: {} (QR: {})", savedTable.getTableNumber(), qrCode);
+        CafeTable savedCafeTable = tableRepository.save(table);
+        log.info("테이블 생성 완료: {} (QR: {})", savedCafeTable.getTableNumber(), qrCode);
 
         return TableResponse.builder()
-                .id(savedTable.getId())
-                .tableNumber(savedTable.getTableNumber())
-                .seatCount(savedTable.getSeatCount())
-                .locationDescription(savedTable.getLocationDescription())
-                .status(savedTable.getStatus().name())
-                .qrCode(savedTable.getQrCode())
+                .id(savedCafeTable.getId())
+                .tableNumber(savedCafeTable.getTableNumber())
+                .seatCount(savedCafeTable.getSeatCount())
+                .locationDescription(savedCafeTable.getLocationDescription())
+                .status(savedCafeTable.getStatus().name())
+                .qrCode(savedCafeTable.getQrCode())
                 .build();
     }
 
@@ -143,8 +143,8 @@ public class TableService {
      */
     @Transactional
     public TableResponse updateTable(Long tableId, TableCreateRequest request) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         // 테이블 번호 중복 체크 (자신 제외)
@@ -159,16 +159,16 @@ public class TableService {
                 request.getLocationDescription()
         );
 
-        Table updatedTable = tableRepository.save(table);
-        log.info("테이블 정보 수정 완료: {}", updatedTable.getTableNumber());
+        CafeTable updatedCafeTable = tableRepository.save(table);
+        log.info("테이블 정보 수정 완료: {}", updatedCafeTable.getTableNumber());
 
         return TableResponse.builder()
-                .id(updatedTable.getId())
-                .tableNumber(updatedTable.getTableNumber())
-                .seatCount(updatedTable.getSeatCount())
-                .locationDescription(updatedTable.getLocationDescription())
-                .status(updatedTable.getStatus().name())
-                .qrCode(updatedTable.getQrCode())
+                .id(updatedCafeTable.getId())
+                .tableNumber(updatedCafeTable.getTableNumber())
+                .seatCount(updatedCafeTable.getSeatCount())
+                .locationDescription(updatedCafeTable.getLocationDescription())
+                .status(updatedCafeTable.getStatus().name())
+                .qrCode(updatedCafeTable.getQrCode())
                 .build();
     }
 
@@ -177,8 +177,8 @@ public class TableService {
      */
     @Transactional
     public void updateTableStatus(Long tableId, TableStatus status) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         switch (status) {
@@ -196,8 +196,8 @@ public class TableService {
      */
     @Transactional
     public void deleteTable(Long tableId) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         // 사용중인 테이블은 삭제 불가
@@ -215,8 +215,8 @@ public class TableService {
      */
     @Transactional
     public void clearTable(Long tableId) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         table.makeAvailable();
@@ -229,8 +229,8 @@ public class TableService {
      */
     @Transactional
     public String regenerateQrCode(Long tableId) {
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         String newQrCode = generateUniqueQrCode();

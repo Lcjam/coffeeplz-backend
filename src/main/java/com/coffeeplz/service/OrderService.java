@@ -34,8 +34,8 @@ public class OrderService {
         log.info("주문 생성 시작 - 테이블: {}", tableId);
 
         // 테이블 유효성 검증
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         if (table.getStatus() != TableStatus.OCCUPIED) {
@@ -95,7 +95,7 @@ public class OrderService {
     public List<OrderResponse> getActiveOrdersByTable(Long tableId) {
         log.info("테이블 진행 중인 주문 조회 - 테이블: {}", tableId);
 
-        Table table = tableRepository.findById(tableId)
+        CafeTable table = tableRepository.findById(tableId)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         List<Order> orders = orderRepository.findActiveOrdersByTable(table);

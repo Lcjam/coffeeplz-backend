@@ -30,8 +30,8 @@ public class CartService {
         log.info("장바구니 아이템 추가 - 테이블: {}, 메뉴: {}", tableId, request.getMenuId());
 
         // 테이블 조회 및 유효성 검증
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         if (table.getStatus() != TableStatus.OCCUPIED) {
@@ -82,8 +82,8 @@ public class CartService {
         log.info("장바구니 조회 - 테이블: {}", tableId);
 
         // 테이블 유효성 검증
-        Table table = tableRepository.findById(tableId)
-                .filter(Table::getIsActive)
+        CafeTable table = tableRepository.findById(tableId)
+                .filter(CafeTable::getIsActive)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         return getCartResponse(tableId);
@@ -149,7 +149,7 @@ public class CartService {
     public void clearCart(Long tableId) {
         log.info("장바구니 전체 삭제 - 테이블: {}", tableId);
 
-        Table table = tableRepository.findById(tableId)
+        CafeTable table = tableRepository.findById(tableId)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다"));
 
         Cart cart = cartRepository.findByTable(table).orElse(null);
@@ -174,7 +174,7 @@ public class CartService {
      * 테이블별 장바구니 존재 여부 확인
      */
     public boolean hasActiveCart(Long tableId) {
-        Table table = tableRepository.findById(tableId).orElse(null);
+        CafeTable table = tableRepository.findById(tableId).orElse(null);
         if (table == null) {
             return false;
         }
@@ -187,7 +187,7 @@ public class CartService {
      * 장바구니 총 금액 계산
      */
     public BigDecimal calculateCartTotal(Long tableId) {
-        Table table = tableRepository.findById(tableId).orElse(null);
+        CafeTable table = tableRepository.findById(tableId).orElse(null);
         if (table == null) {
             return BigDecimal.ZERO;
         }
@@ -199,7 +199,7 @@ public class CartService {
     /**
      * 장바구니 조회 또는 생성
      */
-    private Cart getOrCreateCart(Table table) {
+    private Cart getOrCreateCart(CafeTable table) {
         Cart cart = cartRepository.findByTable(table).orElse(null);
         
         if (cart == null) {
@@ -219,7 +219,7 @@ public class CartService {
      * 장바구니 응답 DTO 생성
      */
     private CartResponse getCartResponse(Long tableId) {
-        Table table = tableRepository.findById(tableId).orElse(null);
+        CafeTable table = tableRepository.findById(tableId).orElse(null);
         if (table == null) {
             return createEmptyCartResponse(tableId);
         }
@@ -256,7 +256,7 @@ public class CartService {
      * 빈 장바구니 응답 생성
      */
     private CartResponse createEmptyCartResponse(Long tableId) {
-        Table table = tableRepository.findById(tableId).orElse(null);
+        CafeTable table = tableRepository.findById(tableId).orElse(null);
         TableResponse tableResponse = null;
         
         if (table != null) {

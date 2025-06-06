@@ -68,4 +68,14 @@ public interface TableRepository extends JpaRepository<Table, Long> {
     // 위치별 테이블 검색
     @Query("SELECT t FROM Table t WHERE t.locationDescription LIKE %:location% AND t.isActive = true")
     List<Table> findByLocationContaining(@Param("location") String location);
+
+    // QR 코드로 활성화된 테이블 조회
+    Optional<Table> findByQrCodeAndIsActiveTrue(String qrCode);
+
+    // 사용 가능한 테이블만 조회
+    List<Table> findByStatusAndIsActiveTrueOrderByTableNumberAsc(TableStatus status);
+
+    // 테이블 상태별 통계
+    @Query("SELECT t.status, COUNT(t) FROM Table t WHERE t.isActive = true GROUP BY t.status")
+    List<Object[]> getTableStatusStats();
 } 

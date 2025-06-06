@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PointTransactionType {
-    CHARGE("충전"),
-    USE("사용"),
-    REFUND("환불"),
-    REWARD("적립");
+public enum PaymentStatus {
+    PENDING("대기"),
+    COMPLETED("완료"),
+    FAILED("실패"),
+    REFUNDED("환불");
 
     private final String description;
 } 

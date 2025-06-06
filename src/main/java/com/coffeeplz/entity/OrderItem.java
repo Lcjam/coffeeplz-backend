@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @jakarta.persistence.Table(name = "order_items")
@@ -49,6 +51,11 @@ public class OrderItem extends BaseEntity {
 
     @Column(name = "notes", length = 200)
     private String notes;
+
+    // 연관관계
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderItemOption> orderItemOptions = new ArrayList<>();
 
     // 비즈니스 메서드
     public void calculateSubtotal() {

@@ -93,4 +93,25 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      */
     @Query("SELECT o FROM Order o WHERE o.user IS NOT NULL ORDER BY o.createdAt DESC")
     List<Order> findUserOrdersOrderByCreatedAtDesc();
+
+    /**
+     * 결제와 함께 주문 조회
+     */
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.payment WHERE o.id = :orderId")
+    Order findByIdWithPayment(@Param("orderId") Long orderId);
+
+    /**
+     * 테이블의 오늘 완료된 주문들 조회
+     */
+    @Query("SELECT o FROM Order o WHERE o.table.id = :tableId AND o.status = 'COMPLETED' AND DATE(o.createdAt) = CURRENT_DATE")
+    List<Order> findTodayCompletedOrdersByTableId(@Param("tableId") Long tableId);
+
+    /**
+     * 특정 기간 매출 통계
+     */
+    @Query("SELECT DATE(o.createdAt), COUNT(o), SUM(o.totalAmount) FROM Order o " +
+           "WHERE o.status = 'COMPLETED' AND o.createdAt BETWEEN :startDate AND :endDate " +
+           "GROUP BY DATE(o.createdAt) ORDER BY DATE(o.createdAt)")
+    List<Object[]> getSalesStatsByPeriod(@Param("startDate") LocalDateTime startDate, 
+                                        @Param("endDate") LocalDateTime endDate);
 } 

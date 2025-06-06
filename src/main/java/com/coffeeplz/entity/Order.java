@@ -58,6 +58,9 @@ public class Order extends BaseEntity {
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
+
     // 비즈니스 메서드
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);

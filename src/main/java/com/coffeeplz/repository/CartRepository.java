@@ -60,4 +60,23 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.table.qrCode = :qrCode")
     void deleteByTableQrCode(@Param("qrCode") String qrCode);
+
+    /**
+     * 테이블의 장바구니를 아이템과 함께 조회
+     */
+    @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.cartItems ci LEFT JOIN FETCH ci.menu WHERE c.table = :table")
+    Optional<Cart> findByTableWithItems(@Param("table") Table table);
+
+    /**
+     * QR코드로 테이블의 장바구니를 아이템과 함께 조회
+     */
+    @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.cartItems ci LEFT JOIN FETCH ci.menu WHERE c.table.qrCode = :qrCode")
+    Optional<Cart> findByTableQrCodeWithItems(@Param("qrCode") String qrCode);
+
+    /**
+     * 빈 장바구니들 삭제 (정리용)
+     */
+    @Modifying
+    @Query("DELETE FROM Cart c WHERE c.id NOT IN (SELECT DISTINCT ci.cart.id FROM CartItem ci)")
+    void deleteEmptyCarts();
 } 

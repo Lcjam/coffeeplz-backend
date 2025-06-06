@@ -35,9 +35,9 @@ public class Menu extends BaseEntity {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Size(max = 50, message = "카테고리는 50자 이하여야 합니다")
-    @Column(name = "category", length = 50)
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "image_url", length = 255)
     private String imageUrl;
@@ -71,15 +71,19 @@ public class Menu extends BaseEntity {
     @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Review> reviews = new ArrayList<>();
+    private List<MenuOption> menuOptions = new ArrayList<>();
 
     // 비즈니스 메서드
-    public void updateInfo(String name, String description, BigDecimal price, String category) {
+    public void updateInfo(String name, String description, BigDecimal price, Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.category = category;
+    }
+
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -110,8 +114,5 @@ public class Menu extends BaseEntity {
         this.isAvailable = false;
     }
 
-    public void updateRating(BigDecimal newRating, Integer newReviewCount) {
-        this.averageRating = newRating;
-        this.reviewCount = newReviewCount;
-    }
+
 } 

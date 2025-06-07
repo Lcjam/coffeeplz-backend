@@ -2,7 +2,7 @@ package com.coffeeplz.repository;
 
 import com.coffeeplz.entity.Order;
 import com.coffeeplz.entity.OrderStatus;
-import com.coffeeplz.entity.Table;
+import com.coffeeplz.entity.CafeTable;
 import com.coffeeplz.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,23 +52,23 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     /**
      * 테이블별 주문 내역 조회 (최신순)
      */
-    List<Order> findByTableOrderByCreatedAtDesc(Table table);
+    List<Order> findByTableOrderByCreatedAtDesc(CafeTable table);
     
     /**
      * 테이블별 주문 내역 페이징 조회
      */
-    Page<Order> findByTableOrderByCreatedAtDesc(Table table, Pageable pageable);
+    Page<Order> findByTableOrderByCreatedAtDesc(CafeTable table, Pageable pageable);
     
     /**
      * 테이블의 특정 상태 주문 조회
      */
-    List<Order> findByTableAndStatus(Table table, OrderStatus status);
+    List<Order> findByTableAndStatus(CafeTable table, OrderStatus status);
     
     /**
      * 현재 사용 중인 테이블의 진행 중인 주문 조회
      */
     @Query("SELECT o FROM Order o WHERE o.table = :table AND o.status IN ('PENDING', 'PREPARING', 'READY')")
-    List<Order> findActiveOrdersByTable(@Param("table") Table table);
+    List<Order> findActiveOrdersByTable(@Param("table") CafeTable table);
     
     /**
      * QR코드로 테이블의 진행 중인 주문 조회
@@ -80,7 +80,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * 테이블별 오늘 주문 수 조회
      */
     @Query("SELECT COUNT(o) FROM Order o WHERE o.table = :table AND DATE(o.createdAt) = CURRENT_DATE")
-    long countTodayOrdersByTable(@Param("table") Table table);
+    long countTodayOrdersByTable(@Param("table") CafeTable table);
     
     /**
      * 모든 테이블 주문 조회 (QR 주문 시스템의 메인 조회 방식)

@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@jakarta.persistence.Table(name = "tables")
+@Table(name = "tables")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Table extends BaseEntity {
+public class CafeTable extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

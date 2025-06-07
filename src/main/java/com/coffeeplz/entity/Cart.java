@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@jakarta.persistence.Table(name = "cart")
+@Table(name = "cart")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -28,7 +29,7 @@ public class Cart extends BaseEntity {
     @NotNull(message = "테이블은 필수입니다")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id", nullable = false)
-    private Table table;
+    private CafeTable table;
 
     // 연관관계
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -83,7 +84,7 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    public void setTable(Table table) {
+    public void setTable(CafeTable table) {
         this.table = table;
     }
 

@@ -81,6 +81,7 @@ public class JwtService {
         try {
             return Jwts.parser()
                     .setSigningKey(getSignInKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {

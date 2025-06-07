@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.owasp.dependencycheck' version '8.4.0'
 }
 
 group = 'com.coffeeplz'
@@ -57,4 +58,20 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// OWASP Dependency Check 설정
+dependencyCheck {
+    format = 'ALL'
+    outputDirectory = 'build/reports'
+    suppressionFile = 'suppression.xml'
+    failBuildOnCVSS = 7
+    analyzers {
+        assemblyEnabled = false
+        nuspecEnabled = false
+        nugetconfEnabled = false
+        nodeAudit {
+            enabled = false
+        }
+    }
 } 

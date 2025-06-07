@@ -79,8 +79,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     /**
      * 테이블별 오늘 주문 수 조회
      */
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.table = :table AND DATE(o.createdAt) = CURRENT_DATE")
-    long countTodayOrdersByTable(@Param("table") CafeTable table);
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.table = :table AND o.createdAt >= :startOfDay AND o.createdAt < :endOfDay")
+    long countTodayOrdersByTable(@Param("table") CafeTable table, 
+                                @Param("startOfDay") LocalDateTime startOfDay, 
+                                @Param("endOfDay") LocalDateTime endOfDay);
     
     /**
      * 모든 테이블 주문 조회 (QR 주문 시스템의 메인 조회 방식)
@@ -103,15 +105,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     /**
      * 테이블의 오늘 완료된 주문들 조회
      */
-    @Query("SELECT o FROM Order o WHERE o.table.id = :tableId AND o.status = 'COMPLETED' AND DATE(o.createdAt) = CURRENT_DATE")
-    List<Order> findTodayCompletedOrdersByTableId(@Param("tableId") Long tableId);
+    @Query("SELECT o FROM Order o WHERE o.table.id = :tableId AND o.status = 'COMPLETED' AND o.createdAt >= :startOfDay AND o.createdAt < :endOfDay")
+    List<Order> findTodayCompletedOrdersByTableId(@Param("tableId") Long tableId,
+                                                 @Param("startOfDay") LocalDateTime startOfDay,
+                                                 @Param("endOfDay") LocalDateTime endOfDay);
 
     /**
-     * 특정 기간 매출 통계
+     * 특정 기간 매출 통계 (일별)
      */
-    @Query("SELECT DATE(o.createdAt), COUNT(o), SUM(o.totalAmount) FROM Order o " +
+    @Query("SELECT CAST(o.createdAt AS date), COUNT(o), SUM(o.totalAmount) FROM Order o " +
            "WHERE o.status = 'COMPLETED' AND o.createdAt BETWEEN :startDate AND :endDate " +
-           "GROUP BY DATE(o.createdAt) ORDER BY DATE(o.createdAt)")
+           "GROUP BY CAST(o.createdAt AS date) ORDER BY CAST(o.createdAt AS date)")
     List<Object[]> getSalesStatsByPeriod(@Param("startDate") LocalDateTime startDate, 
                                         @Param("endDate") LocalDateTime endDate);
 } 

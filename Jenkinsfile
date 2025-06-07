@@ -13,9 +13,9 @@ pipeline {
         DB_ROOT_PASSWORD = credentials('db-root-password')
         JWT_SECRET = credentials('jwt-secret')
         
-        // 배포 환경변수
-        PROD_SERVER = credentials('prod-server')
-        STAGING_SERVER = credentials('staging-server')
+        // 배포 환경변수 - 임시 비활성화
+        // PROD_SERVER = credentials('prod-server')
+        // STAGING_SERVER = credentials('staging-server')
     }
     
     stages {

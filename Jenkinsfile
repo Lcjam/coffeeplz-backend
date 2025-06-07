@@ -59,7 +59,7 @@ pipeline {
             post {
                 always {
                     // 테스트 결과 발행
-                    publishTestResults testResultsPattern: 'build/test-results/test/*.xml'
+                    junit testResultsPattern: 'build/test-results/test/*.xml'
                     publishHTML([
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
@@ -148,7 +148,7 @@ pipeline {
             post {
                 always {
                     sh 'docker-compose -f docker-compose.test.yml down'
-                    publishTestResults testResultsPattern: 'build/test-results/integrationTest/*.xml'
+                    junit testResultsPattern: 'build/test-results/integrationTest/*.xml'
                 }
             }
         }

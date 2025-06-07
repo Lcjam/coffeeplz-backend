@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mysql-test:
+    image: mysql:8.0
+    container_name: coffeeplz-mysql-test
+    environment:
+      MYSQL_DATABASE: coffeeplz_test
+      MYSQL_USER: coffeeplz
+      MYSQL_PASSWORD: testpassword
+      MYSQL_ROOT_PASSWORD: testrootpassword
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - coffeeplz-test-network
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    tmpfs:
+      - /var/lib/mysql  # Use tmpfs for faster tests
+
+  app-test:
+    build:
+      context: .
+      target: test
+    container_name: coffeeplz-app-test
+    depends_on:
+      - mysql-test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql-test
+      DB_PORT: 3306
+      DB_NAME: coffeeplz_test
+      DB_USERNAME: coffeeplz
+      DB_PASSWORD: testpassword
+      JWT_SECRET: test-secret-key-12345678901234567890123456789012345678901234567890
+    networks:
+      - coffeeplz-test-network
+
+  # Test automation service
+  test-runner:
+    build:
+      context: .
+      target: test
+    container_name: coffeeplz-test-runner
+    depends_on:
+      - mysql-test
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql-test
+      DB_PORT: 3306
+      DB_NAME: coffeeplz_test
+      DB_USERNAME: coffeeplz
+      DB_PASSWORD: testpassword
+    volumes:
+      - ./test-results:/app/test-results
+    networks:
+      - coffeeplz-test-network
+    command: ["./gradlew", "test", "--no-daemon"]
+
+networks:
+  coffeeplz-test-network:
+    driver: bridge 

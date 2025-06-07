@@ -28,7 +28,7 @@ public class MenuService {
      * 전체 메뉴 조회 (소비자용) - 판매 가능한 메뉴만
      */
     public List<MenuResponse> getAllMenus() {
-        List<Menu> menus = menuRepository.findByAvailableTrue();
+        List<Menu> menus = menuRepository.findByIsAvailableTrue();
         
         return menus.stream()
                 .map(this::convertToMenuResponse)
@@ -218,7 +218,7 @@ public class MenuService {
      * 메뉴 검색 (이름 기준)
      */
     public List<MenuResponse> searchMenus(String keyword) {
-        List<Menu> menus = menuRepository.findByNameContainingAndAvailableTrue(keyword);
+        List<Menu> menus = menuRepository.findByNameContainingAndIsAvailableTrue(keyword);
         
         return menus.stream()
                 .map(this::convertToMenuResponse)

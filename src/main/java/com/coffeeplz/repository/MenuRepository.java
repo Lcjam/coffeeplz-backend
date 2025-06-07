@@ -17,38 +17,28 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     /**
      * 판매 가능한 메뉴만 조회
      */
-    List<Menu> findByAvailableTrue();
+    List<Menu> findByIsAvailableTrue();
     
     /**
      * 카테고리별 메뉴 조회 (엔티티 기반)
      */
     List<Menu> findByCategoryIdAndIsAvailableTrue(Long categoryId);
-
-    /**
-     * 카테고리별 메뉴 조회 (기존 문자열 기반 - 호환성)
-     */
-    List<Menu> findByCategoryAndAvailableTrue(String category);
     
     /**
      * 가격 범위로 메뉴 조회
      */
-    List<Menu> findByPriceBetweenAndAvailableTrue(BigDecimal minPrice, BigDecimal maxPrice);
+    List<Menu> findByPriceBetweenAndIsAvailableTrue(BigDecimal minPrice, BigDecimal maxPrice);
     
     /**
      * 메뉴명으로 검색 (부분 일치)
      */
-    @Query("SELECT m FROM Menu m WHERE m.name LIKE %:name% AND m.available = true")
-    List<Menu> findByNameContainingAndAvailableTrue(@Param("name") String name);
+    @Query("SELECT m FROM Menu m WHERE m.name LIKE %:name% AND m.isAvailable = true")
+    List<Menu> findByNameContainingAndIsAvailableTrue(@Param("name") String name);
     
-        /**
+    /**
      * 카테고리별 페이징 조회 (엔티티 기반)
      */
     Page<Menu> findByCategoryIdAndIsAvailableTrue(Long categoryId, Pageable pageable);
-
-    /**
-     * 카테고리별 페이징 조회 (기존 문자열 기반)
-     */
-    Page<Menu> findByCategoryAndAvailableTrue(String category, Pageable pageable);
 
     /**
      * 메뉴 옵션과 함께 조회

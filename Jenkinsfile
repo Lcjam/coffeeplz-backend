@@ -182,6 +182,9 @@ pipeline {
             }
             steps {
                 echo 'Deploying to staging environment...'
+                echo 'Staging deployment temporarily disabled for testing'
+                // 임시로 배포 비활성화 - 실제 서버가 준비되면 활성화
+                /*
                 script {
                     sshagent(['staging-ssh-key']) {
                         sh """
@@ -194,6 +197,7 @@ pipeline {
                         """
                     }
                 }
+                */
             }
         }
         
@@ -203,6 +207,9 @@ pipeline {
             }
             steps {
                 echo 'Deploying to production environment...'
+                echo 'Production deployment temporarily disabled for testing'
+                // 임시로 배포 비활성화 - 실제 서버가 준비되면 활성화
+                /*
                 script {
                     // 배포 승인 단계
                     timeout(time: 5, unit: 'MINUTES') {
@@ -222,6 +229,7 @@ pipeline {
                         """
                     }
                 }
+                */
             }
         }
         
@@ -234,6 +242,9 @@ pipeline {
             }
             steps {
                 echo 'Performing health check...'
+                echo 'Health check temporarily disabled for testing'
+                // 임시로 헬스체크 비활성화 - 실제 서버가 준비되면 활성화
+                /*
                 script {
                     def server = env.GIT_BRANCH == 'main' ? PROD_SERVER : STAGING_SERVER
                     def port = env.GIT_BRANCH == 'main' ? '80' : '8080'
@@ -254,6 +265,7 @@ pipeline {
                         """
                     }
                 }
+                */
             }
         }
     }
@@ -266,7 +278,8 @@ pipeline {
         
         success {
             echo 'Pipeline completed successfully!'
-            // 성공 알림 (Slack, 이메일 등)
+            // 성공 알림 (Slack, 이메일 등) - 임시 비활성화
+            /*
             slackSend(
                 channel: '#deployments',
                 color: 'good',
@@ -278,11 +291,13 @@ pipeline {
                     Deployer: ${env.DEPLOYER ?: 'Auto'}
                 """
             )
+            */
         }
         
         failure {
             echo 'Pipeline failed!'
-            // 실패 알림
+            // 실패 알림 - 임시 비활성화
+            /*
             slackSend(
                 channel: '#deployments',
                 color: 'danger',
@@ -294,10 +309,13 @@ pipeline {
                     Check: ${env.BUILD_URL}
                 """
             )
+            */
         }
         
         unstable {
             echo 'Pipeline is unstable!'
+            // 불안정 알림 - 임시 비활성화
+            /*
             slackSend(
                 channel: '#deployments',
                 color: 'warning',
@@ -308,6 +326,7 @@ pipeline {
                     Commit: ${env.GIT_COMMIT}
                 """
             )
+            */
         }
     }
 } 
